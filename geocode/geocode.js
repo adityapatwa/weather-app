@@ -17,7 +17,7 @@ let geocodeAddress = (address, callback) => {
                     callback('No Result Found');
                 } else {
                     callback(undefined, {
-                        address: body.results[0].locations[0].street,
+                        address: body.results[0].providedLocation.location,
                         lat: body.results[0].locations[0].latLng.lat,
                         lng: body.results[0].locations[0].latLng.lng
                     });
