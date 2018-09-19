@@ -1,5 +1,5 @@
-const request = require('request');
 const yargs = require('yargs');
+const geocode = require('./geocode/geocode');
 
 const argv = yargs
     .options({
@@ -14,29 +14,10 @@ const argv = yargs
     .alias('help', 'h')
     .argv;
 
-
-const url = 'http://www.mapquestapi.com/geocoding/v1/address?';
-const key = '09jiKAxod7j3yPUWJxUZDwG2503Z4sJJ';
-const address = encodeURIComponent(argv.address);
-const urlStr = `${url}key=${key}&location=${address}`;
-
-request({
-    url: urlStr,
-    json: true
-}, (error, response, body) => {
-    if (error) {
-        console.log('Unable to connect to mapquest.api')
+geocode.geocodeAddress(argv.address, (errorMessage, results) => {
+    if(errorMessage) {
+        console.log(errorMessage);
     } else {
-        try {
-            if (body.results[0].locations[0].street === '') {
-                console.log('No Result Found')
-            } else {
-                console.log(`Address: ${body.results[0].locations[0].street}`);
-                console.log(`Latitude: ${body.results[0].locations[0].latLng.lat}`);
-                console.log(`Longitude: ${body.results[0].locations[0].latLng.lng}`);
-            }
-        } catch (e) {
-            console.log(JSON.stringify(body, undefined, 2))
-        }
+        console.log(JSON.stringify(results, undefined, 2));
     }
 });
